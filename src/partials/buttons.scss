@@ -1,0 +1,26 @@
+@import "variables";
+
+.mono {
+    font-family: 'Roboto Mono', monospace;
+}
+
+.btn-action {
+    // color: #d0d0d0;
+    font-weight: 100;
+    font-size: .8rem;
+    white-space: nowrap;
+    padding: .05rem .3rem;
+    line-height: 1.0;
+    border-radius: .1rem;
+}
+
+.btn-tiny {
+    font-size: .7rem !important;
+}
+
+button.btn-event {
+    font-size: .8rem;
+    padding: .05rem .3rem;
+    line-height: 1.0;
+    border-radius: .1rem;
+}

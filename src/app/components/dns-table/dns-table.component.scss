@@ -1,0 +1,26 @@
+.dns-toolbar {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: .75rem;
+}
+
+.dns-table .badge {
+    min-width: 4.5rem;
+}
+
+.empty {
+    color: #7c838b;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+@media (max-width: 991px) {
+    .dns-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: .5rem;
+    }
+}

@@ -1,0 +1,59 @@
+<div class="dns-toolbar">
+  <div>
+    <button type="button" class="btn btn-sm btn-dark" (click)="toggleModule()">
+      <i class="fas" [class.fa-play]="!modEnabled" [class.fa-stop]="modEnabled"></i>
+      {{ modEnabled ? 'Stop net.sniff' : 'Start net.sniff' }}
+    </button>
+
+    <button type="button" class="btn btn-sm btn-outline-light" style="margin-left: 8px" (click)="clear()">
+      <i class="fas fa-trash-alt"></i>
+      Clear
+    </button>
+  </div>
+
+  <small class="text-muted">
+    DNS replies and HTTPS SNI activity, grouped by client and website.
+  </small>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-dark table-sm dns-table">
+    <thead>
+      <tr>
+        <th width="1%" class="nowrap" sortable-column="timestamp" sort-direction="desc">When</th>
+        <th width="1%" class="nowrap" sortable-column="client">Who</th>
+        <th width="1%" class="nowrap" sortable-column="hostname">Hostname</th>
+        <th width="1%" class="nowrap" sortable-column="activity">Type</th>
+        <th sortable-column="website">Website</th>
+        <th width="1%" class="nowrap" sortable-column="peer">Peer</th>
+        <th sortable-column="details">Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="dnsEvents.length == 0">
+        <td colspan="7" align="center">
+          <i>empty</i>
+        </td>
+      </tr>
+
+      <tr *ngFor="let event of dnsEvents | search: omnibar.query">
+        <td class="nowrap">{{ event.time | date: 'short' }}</td>
+        <td class="nowrap">{{ event.client || 'unknown' }}</td>
+        <td class="nowrap">{{ event.hostname || 'unknown' }}</td>
+        <td>
+          <span class="badge" [class.badge-info]="event.activity == 'DNS'" [class.badge-warning]="event.activity == 'HTTPS'">
+            {{ event.activity }}
+          </span>
+          <span *ngIf="event.count > 1" class="badge badge-pill badge-secondary ml-1">x{{ event.count }}</span>
+        </td>
+        <td>
+          <span [class.empty]="!event.website">{{ event.website || 'unknown' }}</span>
+        </td>
+        <td class="nowrap">{{ event.peer || 'unknown' }}</td>
+        <td>
+          <span [class.empty]="!event.details">{{ event.details || event.raw }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

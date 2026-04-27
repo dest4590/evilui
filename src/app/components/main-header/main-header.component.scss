@@ -1,0 +1,117 @@
+@import "variables";
+@import "buttons";
+
+.navbar {
+    padding: .2rem 0;
+
+    @media (min-width: 768px) {
+        padding: .5rem 0;
+    }
+
+    .navbar-nav {
+        display: block;
+        width: 100%;
+
+        li.nav-item {
+            float: left;
+            margin-left: 5px;
+            
+            @media (min-width: 768px) {
+                margin-left: 10px;
+            }
+
+            &:first {
+                margin-left: 0px;
+            }
+        }
+        
+        li.right {
+            float: right;
+            margin-left: 0;
+            margin-right: 10px;
+        }
+    }
+
+    .navbar-nav .nav-link {
+        text-align: center;
+        display: table-cell;
+        vertical-align: middle;
+        padding-top: 0;
+        padding-bottom: 0;
+        height: 50px;
+
+        @media (min-width: 768px) {
+            height: 70px;
+        }
+
+        .nav-text {
+            display: none;
+            @media (min-width: 768px) {
+                display: inline;
+            }
+        }
+
+        & > *[class^='fa'] {
+            display: block;
+            position: relative;
+            width: 48px;
+            font-size: 24px;
+            top: 0;
+            margin: 2px auto 4px auto;
+            line-height: 24px;
+
+            .badge {
+                font-size: 0.75rem;
+                position: absolute;
+                right: 0;
+                top: -7px;
+                font-family: sans-serif;
+            }
+        }
+    }
+
+}
+
+#sessionError {
+    padding: 5px;
+    background-color: #343a40;
+}
+
+div.error-header {
+    background-color: #d2322d;
+    color: white;
+    border-bottom: 1px solid #c2221d;
+}
+
+div.error-title {
+
+}
+
+div.error-body {
+    text-align: center;
+}
+
+// https://stackoverflow.com/questions/53989445/ngx-toastr-toast-not-showing-in-angular-7
+.toast-bootstrap-compatibility-fix {
+  opacity:1;
+}
+
+div.toast-message {
+    font-size: 10rem !important;
+}
+
+.pinned:after {
+    // font-family: 'Font Awesome 5 Free';
+    // font-weight: 900;
+    // content: '\f08d';
+}
+
+// override text-muted
+.navbar-dark .navbar-nav .active>.nav-link, .navbar-dark .navbar-nav .nav-link.active, .navbar-dark .navbar-nav .nav-link.show, .navbar-dark .navbar-nav .show>.nav-link {
+    text-shadow: 0 2px 5px rgba(0,0,0,0.26), 0 2px 5px rgba(0,0,0,0.33);
+}
+
+li.replayDate {
+    padding-top: 40px; 
+    font-size: .8rem;
+}

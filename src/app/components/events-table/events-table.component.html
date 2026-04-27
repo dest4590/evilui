@@ -1,0 +1,91 @@
+<div *ngIf="ignored.length > 0">
+  <table class="table table-sm table-dark" style="margin-bottom: 5px">
+    <tbody>
+      <tr>
+        <td width="1%" class="nowrap">
+          Muted
+        </td>
+        <td>
+          <button 
+           *ngFor="let name of ignored"
+           class="btn btn-sm btn-event btn-{{ btnFor(name) }}"
+           style="margin-left: 5px"
+           (click)="api.cmd('events.include ' + name)"
+           ngbTooltip="Click to unmute this type of events."
+           >
+         {{ name }}
+          </button>
+
+          <button 
+            *ngIf="ignored.length > 1"
+            class="btn btn-sm btn-danger btn-action btn-event"
+           style="margin-left: 10px"
+            ngbTooltip="Clear the muted events list."
+            placement="right"
+            (click)="api.cmd('events.filters.clear')"
+            >
+            clear
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-sm table-dark">
+    <thead>
+      <tr>
+        <th width="1%" sortable-column="time" sort-type="time" sort-direction="desc">Time</th>
+        <th width="1%" sortable-column="tag">Type</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr *ngIf="events.length == 0">
+        <td colspan="3" align="center">
+          <i>empty</i>
+        </td>
+      </tr>
+
+      <tr *ngFor="let event of events | search: omnibar.query">
+        <td class="nowrap">{{ event.time | date: 'short' }}</td>
+        <td>
+          <button 
+            class="btn btn-sm btn-event btn-{{ btnFor(event.tag) }}"
+            (click)="api.cmd('events.ignore ' + event.tag)"
+            ngbTooltip="Click to mute this type of events."
+            placement="right"
+          >
+            {{ event.tag }}
+          </button>
+        </td>
+        <td (click)="showEvent(event)" style="cursor: pointer">
+          <event-data [event]="event"></event-data>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div id="eventModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="eventModalTitle" [ngModel]="curEvent" name="fieldName" ngDefaultControl>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-body" style="padding:0">
+        &nbsp;
+        <span class="badge badge-{{ btnFor(curEvent.tag) }}">{{ curEvent.tag }}</span>
+        &nbsp;
+        <small>{{ curEvent.time | date: 'long' }}</small>
+  
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-right:5px">
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+
+        <pre><code [highlight]="curEventData()" class="json"></code></pre>
+      </div>
+    </div>
+  </div>
+</div>

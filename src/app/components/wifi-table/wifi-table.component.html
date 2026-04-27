@@ -1,0 +1,232 @@
+<div class="table-responsive">
+  <table class="table table-dark table-sm">
+    <thead>
+      <tr>
+        <th width="1%" sortable-column="rssi" sort-direction="asc">RSSI</th>
+        <th sortable-column="mac">BSSID</th>
+        <th sortable-column="hostname">ESSID</th>
+        <th sortable-column="vendor">Vendor</th>
+        <th sortable-column="encryption" style="text-align:center">Encryption</th>
+
+        <th width="1%" *ngIf="hopping" sortable-column="channel">Ch</th>
+        <th width="1%" *ngIf="!hopping">
+          <button type="button" class="btn btn-dark btn-sm" (click)="api.cmd('wifi.recon.channel clear')"
+            placement="right" ngbTooltip="Restore channel hopping.">
+            <i class="fas fa-broadcast-tower"></i>
+          </button>
+        </th>
+
+        <th width="1%" sortable-column="clients">Clients</th>
+        <th sortable-column="sent">Sent</th>
+        <th sortable-column="received">Recvd</th>
+        <th sortable-column="last_seen">Seen</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr *ngIf="aps && aps.length == 0">
+        <td colspan="11" align="center">
+          <i>empty</i>
+        </td>
+      </tr>
+
+      <ng-container *ngFor="let ap of aps | search: omnibar.query">
+        <tr
+          *ngIf="(!currAP || currAP.mac == ap.mac) && (!wifi || !wifi.state.channels.length || wifi.state.channels.includes(ap.channel))"
+          [class.alive]="ap | alive:1000">
+          <td>
+            <ui-signal-indicator [signalstrength]="ap.rssi"></ui-signal-indicator>
+          </td>
+          <td>
+            <div ngbDropdown [open]="visibleMenu == ap.mac">
+              <button class="btn btn-sm btn-dark btn-action" ngbDropdownToggle
+                (click)="visibleMenu = (visibleMenu == ap.mac ? null : ap.mac)">
+                {{ ap.mac | uppercase }}
+              </button>
+              <div ngbDropdownMenu class="menu-dropdown">
+                <ul>
+                  <li>
+                    <a (click)="visibleMenu = null; clipboard.copy(ap.mac.toUpperCase())">Copy</a>
+                  </li>
+                  <li>
+                    <a (click)="api.cmd('wifi.assoc ' + ap.mac); visibleMenu = null;">Associate</a>
+                  </li>
+                  <li *ngIf="ap.clients.length > 0">
+                    <a (click)="api.cmd('wifi.deauth ' + ap.mac); visibleMenu = null;">Deauthenticate Clients</a>
+                  </li>
+                  <li>
+                    <a (click)="setAlias(ap); visibleMenu = null;">Set Alias</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </td>
+
+          <td [class.empty]="ap.hostname === '<hidden>'">
+            {{ ap.hostname }}
+            <span *ngIf="ap.alias" class="badge badge-pill badge-secondary" style="margin-left:5px">{{ ap.alias
+              }}</span>
+          </td>
+
+          <td [class.empty]="!ap.vendor">
+            {{ ap.vendor ? ap.vendor : 'unknown' }}
+          </td>
+
+          <td align="center" class="nowrap">
+            <i *ngIf="ap.encryption === 'OPEN'" class="fas fa-unlock empty" placement="top"
+              ngbTooltip="Open Network"></i>
+
+            <span>
+              <span style="cursor:pointer;" *ngIf="ap.handshake" (click)="downloadHandshakeFor(ap)">
+                <i style=" color: red; margin-right: 5px"
+                  ngbTooltip="WPA key material captured to {{ handshakeFileFor(ap) }}" class="fas fa-key">
+                </i>
+              </span>
+              <span *ngIf="ap.encryption !== 'OPEN'" ngbTooltip="{{ ap.cipher }}, {{ ap.authentication}}">
+                {{ ap.encryption }}
+              </span>
+            </span>
+
+            <div ngbDropdown *ngIf="(ap.wps | json) != '{}'" [open]="visibleWPS == ap.mac" placement="left"
+              style="display: inline">
+              <button ngbDropdownToggle class="btn btn-sm badge badge-secondary btn-action drop-small btn-tiny"
+                (click)="visibleWPS = (visibleWPS == ap.mac ? null : ap.mac)">
+                WPS
+              </button>
+
+              <div ngbDropdownMenu class="menu-dropdown">
+                <table class="table table-sm table-dark">
+                  <tbody>
+                    <tr *ngFor="let item of ap.wps | keyvalue">
+                      <th>{{ item.key }}</th>
+                      <td>{{ item.value }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </td>
+
+          <td *ngIf="hopping" align="center">
+            <button type="button" class="btn btn-dark btn-sm btn-action"
+              (click)="api.cmd('wifi.recon.channel ' + ap.channel)" ngbTooltip="Stay on channel {{ ap.channel }}.">
+              {{ ap.channel }}
+            </button>
+          </td>
+          <td *ngIf="!hopping" align="center">
+            {{ ap.channel }}
+          </td>
+
+          <td [class.empty]="ap.clients.length == 0" align="center">
+            <span *ngIf="ap.clients.length == 0">0</span>
+            <span *ngIf="ap.clients.length > 0">
+              <span style="cursor:pointer;" class="badge badge-danger" (click)="currAP = (currAP ? null : ap)">
+                {{ ap.clients.length }}
+                <i *ngIf="!currAP" class="fas fa-angle-right"></i>
+                <i *ngIf="currAP && currAP.mac == ap.mac" class="fas fa-angle-down"></i>
+              </span>
+            </span>
+          </td>
+
+          <td [class.empty]="!ap.sent">{{ ap.sent | size }}</td>
+          <td [class.empty]="!ap.received">{{ ap.received | size }}</td>
+          <td class="time">{{ ap.last_seen | date: 'HH:mm:ss' }}</td>
+
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+
+  <table *ngIf="currAP" class="table table-sm table-dark">
+    <thead>
+      <tr>
+        <th style="width:1%">RSSI</th>
+        <th style="width:1%">MAC</th>
+        <th>Vendor</th>
+        <th>Sent</th>
+        <th>Recvd</th>
+        <th style="width:1%" class="nowrap">First Seen</th>
+        <th style="width:1%" class="nowrap">Last Seen</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="currAP.clients.length == 0">
+        <td colspan="2" align="center">
+          <i>empty</i>
+        </td>
+      </tr>
+
+      <tr *ngFor="let client of currAP.clients | search: omnibar.query">
+        <td>
+          <ui-signal-indicator [signalstrength]="client.rssi"></ui-signal-indicator>
+        </td>
+        <td class="nowrap">
+          <span ngbDropdown [open]="visibleClientMenu == client.mac">
+            <button class="btn btn-sm btn-dark btn-action" ngbDropdownToggle
+              (click)="visibleClientMenu = (visibleClientMenu == client.mac ? null : client.mac)">
+              {{ client.mac | uppercase }}
+            </button>
+            <div ngbDropdownMenu class="menu-dropdown">
+              <ul>
+                <li>
+                  <a (click)="visibleMenu = null; clipboard.copy(client.mac.toUpperCase())">Copy</a>
+                </li>
+                <li>
+                  <a (click)="setAlias(client); visibleClientMenu = null;">Set Alias</a>
+                </li>
+                <li>
+                  <a (click)="api.cmd('wifi.deauth ' + client.mac); visibleClientMenu = null;">Deauthenticate</a>
+                </li>
+              </ul>
+            </div>
+          </span>
+
+          <span *ngIf="client.alias" (click)="setAlias(client)" class="badge badge-pill badge-secondary"
+            style="margin-left: 5px; cursor:pointer">
+            {{ client.alias }}
+          </span>
+        </td>
+        <td [class.empty]="!client.vendor">
+          {{ client.vendor ? client.vendor : 'unknown' }}
+        </td>
+        <td class="nowrap" [class.empty]="!client.sent">{{ client.sent | size }}</td>
+        <td class="nowrap" [class.empty]="!client.received">{{ client.received | size }}</td>
+        <td>
+          {{ client.first_seen | date: 'HH:mm:ss' }}
+        </td>
+        <td>
+          {{ client.last_seen | date: 'HH:mm:ss' }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div id="inputModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="inputModalTitle">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">
+          <h5 id="inputModalTitle"></h5>
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="doSetAlias()">
+          <div class="form-group row">
+            <div class="col">
+              <input type="text" class="form-control param-input" id="in" value="">
+              <input type="hidden" id="inhost" value="">
+            </div>
+          </div>
+          <div class="text-right">
+            <button type="submit" class="btn btn-dark">Ok</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

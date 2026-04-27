@@ -1,0 +1,261 @@
+<div class="omnibar collapse" [class.show]="api.settings.omnibar" id="omniCollapse">
+
+  <div *ngIf="withCmd" class="row">
+
+    <div *ngIf="rest.state.replaying" class="col-md-12">
+      <div class="input-group input-group-sm">
+        
+        <button 
+            *ngIf="rest.state.replaying"
+             type="button" 
+             class="btn btn-dark btn-sm" 
+             placement="right" 
+             ngbTooltip="{{ api.isPaused() ? 'Continue' : 'Pause' }} replay."
+             (click)="api.paused = !api.paused">
+          <i *ngIf="api.isPaused()" class="fas fa-play"></i>
+          <i *ngIf="!api.isPaused()" class="fas fa-pause"></i>
+        </button>
+
+        <button 
+           type="button" 
+           class="btn btn-dark btn-sm" 
+           placement="right" 
+           ngbTooltip="Stop replay."
+           (click)="stopReplaying()">
+          <i class="fas fa-stop"></i>
+        </button>
+
+        <button class="btn btn-dark btn-sm" ngbTooltip="Replaying {{ api.session.polled_at | date:'short' }}">
+          {{ curReplaytime() | rectime }}
+        </button>
+
+        <input 
+         type="range" 
+         id="replayRange"
+         class="custom-range" 
+         (change)="setReplayFrame($event.target.value)" 
+         min="0" 
+         max="{{ rest.state.rec_frames }}" 
+         value="{{ rest.state.rec_cur_frame }}">
+
+        <button class="btn btn-dark btn-sm">
+          {{ rest.state.rec_time | rectime }}
+        </button>
+
+      </div>
+    </div>
+
+    <div class="col-md-12" *ngIf="!rest.state.replaying">
+      <div class="input-group input-group-sm">
+
+        <button 
+           *ngIf="rest.state.recording"
+           type="button" 
+           class="btn btn-dark btn-sm" 
+           ngbTooltip="Stop recording the session." 
+           placement="right" 
+           (click)="stopRecording()">
+          <i class="fas fa-stop"></i>
+          {{ rest.state.rec_time | rectime }}
+        </button>
+
+        <button *ngIf="rest.state.loading" class="btn btn-sm btn-dark" disabled>
+          loading ...
+        </button>
+
+        <div ngbDropdown *ngIf="withLimit && !rest.state.recording && !rest.state.replaying && !rest.state.loading">
+          <button ngbDropdownToggle 
+           ngbTooltip="Record or replay the session."
+           placement="right"
+           class="btn btn-dark btn-sm">
+            <i class="fas fa-video"></i>
+          </button>
+
+          <div ngbDropdownMenu class="menu-dropdown">
+            <ul>
+              <li>
+                <a (click)="showRecordModal()">
+                  <i class="fas fa-circle" style="color: darkred"></i> Record Session
+                </a>
+              </li>
+              <li>
+                <a (click)="showReplayModal()">
+                  <i class="fas fa-folder-open"></i> Replay
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <button 
+           type="button" 
+           class="btn btn-dark btn-sm" 
+           ngbTooltip="{{ api.isPaused() ? 'Resume API polling.' : 'Pause API polling and freeze the UI for editing.' }}" 
+           placement="right" 
+           (click)="api.paused = !api.paused">
+          <i *ngIf="api.isPaused()" class="fas fa-play"></i>
+          <span *ngIf="!api.isPaused()">
+            {{ api.ping }}ms
+          </span>
+        </button>
+
+        <button 
+           *ngIf="clearCmd" 
+           type="button" 
+           class="btn btn-dark btn-sm" 
+           ngbTooltip="Clear records from the current view." 
+           placement="right" 
+           (click)="onClearClicked()">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+
+        <ng-container *ngIf="withLimit">
+          <select 
+              (change)="api.settings.events = $event.target.value" 
+              placement="right"
+              ngbTooltip="Set how many events to display.">
+            <option value="15" [selected]="api.settings.events == 15">15</option>
+            <option value="25" [selected]="api.settings.events == 25">25</option>
+            <option value="50" [selected]="api.settings.events == 50">50</option>
+            <option value="100" [selected]="api.settings.events == 100">100</option>
+            <option value="500" [selected]="api.settings.events == 500">500</option>
+          </select>
+        </ng-container>
+
+        <ng-container *ngIf="withIfaces">
+          <span 
+            *ngIf="ifaces.length == 0" 
+            ngbTooltip="No compatible interfaces found. Disconnect from any network the wireless interface you want to use for scanning."
+            placement="right"
+            class="badge badge-warning" 
+            style="margin: 3px; padding-top:7px">
+            <i class="fas fa-exclamation-triangle"></i>
+          </span>
+          <select 
+              id="wifiiface"
+              *ngIf="ifaces.length > 0"
+              [disabled]="api.module('wifi').running" 
+              (change)="onSetWifiInterface($event.target.value)" 
+              ngbTooltip="Change the wifi.interface parameter.">
+            <option 
+                *ngFor="let iface of ifaces" 
+                value="{{ iface.name }}"
+                [selected]="isWifiIface(iface)"
+                >{{ iface.name }}</option>
+          </select>
+        </ng-container>
+
+        <span *ngFor="let mod of modules | keyvalue">
+          <button 
+            type="button" 
+            class="btn btn-dark btn-sm" 
+            ngbTooltip="{{(enabled[mod.key] ? 'Stop ' : 'Start ') + mod.key + ' module.'}}" 
+            placement="right" 
+            (click)="onModuleToggleClicked(mod)">
+            <i *ngIf="enabled[mod.key]" class="fas fa-stop"></i>
+            <i *ngIf="!enabled[mod.key]" class="fas fa-play"></i>
+          </button>
+        </span>
+
+        <div class="input-group-prepend">
+          <span class="input-group-text">
+            <i class="fas fa-terminal"></i>
+          </span>
+        </div>
+        <input [ngbTypeahead]="searchCommand" [(ngModel)]="cmd" id="cmd" (keyup.enter)="onCmd()" type="text" class="form-control" placeholder="Command bar ..." aria-label="Command bar ..."/>
+
+        <button 
+           type="button" 
+           class="btn btn-dark btn-sm" 
+           ngbTooltip="Hide Omnibar" 
+           placement="left" 
+           (click)="api.settings.omnibar = false">
+          <i class="far fa-caret-square-up"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="input-group input-group-sm">
+        <input [(ngModel)]="svc.query" type="text" class="form-control" placeholder="Search ..." aria-label="Search"/>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="recordModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="recordModalTitle">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">
+          <h5 id="recordModalTitle">Record File</h5>
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="doRecord()">
+          <div class="form-group row">
+            <div class="col">
+              <input type="text" class="form-control" id="recordFile" value="">
+            </div>
+          </div>
+          <div class="text-right">
+            <button type="submit" class="btn btn-dark">Start Recording</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="loadingModal" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="loadingModalTitle">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+          Loading session from {{ rest.state.rec_filename.split('/').pop() }} ...
+          <br>
+          <br/>
+          <ngb-progressbar 
+            type="success" 
+            [value]="rest.state.load_progress"
+            [striped]="true" 
+            [animated]="true">
+              <i>{{ rest.state.load_progress | number:'1.0-0' }}%</i>
+          </ngb-progressbar>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="replayModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="replayModalTitle">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">
+          <h5 id="replayModalTitle">Replay Session File</h5>
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="doReplay()">
+          <div class="form-group row">
+            <div class="col">
+              <input type="text" class="form-control" id="replayFile" value="">
+            </div>
+          </div>
+          <div class="text-right">
+            <button type="submit" class="btn btn-dark">Replay</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
