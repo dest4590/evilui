@@ -2,23 +2,33 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
+    "ignoreDeprecations": "6.0",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "module": "es2015",
-    "moduleResolution": "node",
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es5",
+    "target": "ES2022",
+    "useDefineForClassFields": false,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2018",
-      "dom"
-    ]
-  }
+    "skipLibCheck": true,
+    "paths": {
+      "@angular/*": ["node_modules/@angular/*"],
+      "rxjs": ["node_modules/rxjs"],
+      "rxjs/*": ["node_modules/rxjs/*"],
+      "ngx-toastr": ["node_modules/ngx-toastr"],
+      "ngx-highlightjs": ["node_modules/ngx-highlightjs"],
+      "zone.js": ["node_modules/zone.js"],
+      "zone.js/*": ["node_modules/zone.js/*"],
+      "highlight.js/*": ["node_modules/highlight.js/*"],
+      "tslib": ["node_modules/tslib/tslib.d.ts"]
+    },
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2018", "dom"]
+  },
+  "exclude": ["src/app/guards/index.ts", "src/environments/environment.prod.ts"]
 }

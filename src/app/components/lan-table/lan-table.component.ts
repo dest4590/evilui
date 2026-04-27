@@ -9,6 +9,7 @@ declare var $: any;
 
 @Component({
     selector: 'ui-lan-table',
+    standalone: false,
     templateUrl: './lan-table.component.html',
     styleUrls: ['./lan-table.component.scss']
 })

@@ -9,6 +9,7 @@ declare var $: any;
 
 @Component({
     selector: 'ui-ble-table',
+    standalone: false,
     templateUrl: './ble-table.component.html',
     styleUrls: ['./ble-table.component.scss']
 })

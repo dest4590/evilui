@@ -10,6 +10,7 @@ declare var $: any;
 
 @Component({
     selector: 'ui-hid-table',
+    standalone: false,
     templateUrl: './hid-table.component.html',
     styleUrls: ['./hid-table.component.scss']
 })

@@ -8,6 +8,7 @@ declare var $: any;
 
 @Component({
     selector: 'ui-events-table',
+    standalone: false,
     templateUrl: './events-table.component.html',
     styleUrls: ['./events-table.component.scss']
 })

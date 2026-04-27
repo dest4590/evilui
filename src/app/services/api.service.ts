@@ -3,12 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import compareVersions from 'compare-versions';
 
-import { Observable } from 'rxjs/Observable';
-import { startWith, switchMap } from "rxjs/operators";
-import { from } from 'rxjs';
-import { interval } from "rxjs/internal/observable/interval";
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+import { Observable, from, interval } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { Session } from '../models/session';
@@ -305,8 +301,10 @@ export class ApiService {
                     headers: this.creds.headers,
                     params: { 'from': from, 'n': String(this.settings.events) }
                 })
-            .map(response => this.eventsNew(response))
-            .catch(error => this.eventsError(error));
+            .pipe(
+                map(response => this.eventsNew(response)),
+                catchError(error => this.eventsError(error))
+            );
     }
 
     // DELETE /api/events and clear events
@@ -427,8 +425,10 @@ export class ApiService {
                 headers: this.creds.headers,
                 params: { 'from': from }
             })
-            .map(response => this.sessionNew(start, response))
-            .catch(error => this.sessionError(error));
+            .pipe(
+                map(response => this.sessionNew(start, response)),
+                catchError(error => this.sessionError(error))
+            );
     }
 
     // GET /api/file given its name

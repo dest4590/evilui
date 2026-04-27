@@ -1,7 +1,7 @@
 import { Component, Output, Input, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { OmniBarService } from '../../services/omnibar.service';
 import { ApiService } from '../../services/api.service';
@@ -15,6 +15,7 @@ let params = [];
 
 @Component({
     selector: 'omnibar',
+    standalone: false,
     templateUrl: './omnibar.component.html',
     styleUrls: ['./omnibar.component.scss']
 })

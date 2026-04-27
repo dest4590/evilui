@@ -10,6 +10,7 @@ declare var $: any;
 
 @Component({
     selector: 'ui-wifi-table',
+    standalone: false,
     templateUrl: './wifi-table.component.html',
     styleUrls: ['./wifi-table.component.scss']
 })
@@ -106,7 +107,8 @@ export class WifiTableComponent implements OnInit, OnDestroy {
                     downloadLink[0].click();
                 }
                 else if (isEdge || isIE) {
-                    window.navigator.msSaveOrOpenBlob(file, fileName);
+                    (window.navigator as Navigator & { msSaveOrOpenBlob?: (blob: Blob, defaultName?: string) => boolean })
+                        .msSaveOrOpenBlob?.(file, fileName);
 
                 }
                 else {

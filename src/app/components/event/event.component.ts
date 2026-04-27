@@ -3,6 +3,7 @@ import { Event } from '../../models/event';
 
 @Component({
     selector: 'event-data',
+    standalone: false,
     templateUrl: './event.component.html',
     styleUrls: ['./event.component.scss']
 })

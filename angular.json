@@ -22,6 +22,12 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
+            "allowedCommonJsDependencies": [
+              "compare-versions",
+              "url-parse",
+              "highlight.js/lib/core",
+              "highlight.js/lib/languages/json"
+            ],
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -32,11 +38,11 @@
               ]
             },
             "styles": [
-                "./node_modules/ngx-toastr/toastr.css",
-                "./node_modules/bootstrap/dist/css/bootstrap.min.css",
-                "./src/assets/fontawesome/css/all.css",
-                "./src/assets/openlayers/ol.css",
-                "./src/styles.scss"
+              "./node_modules/ngx-toastr/toastr.css",
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "./src/assets/fontawesome/css/all.css",
+              "./src/assets/openlayers/ol.css",
+              "./src/styles.scss"
             ],
             "scripts": [
               "./node_modules/jquery/dist/jquery.min.js",
@@ -74,18 +80,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ui:build"
+            "buildTarget": "ui:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ui:build:production"
+              "buildTarget": "ui:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ui:build"
+            "buildTarget": "ui:build"
           }
         },
         "test": {
@@ -148,5 +154,7 @@
       }
     }
   },
-  "defaultProject": "ui"
+  "cli": {
+    "analytics": "10dcdbcd-2801-46a0-9797-cf375c928f18"
+  }
 }

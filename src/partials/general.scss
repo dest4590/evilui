@@ -1,5 +1,5 @@
-@import '~highlight.js/styles/dracula.css';
-@import "variables";
+@use 'highlight.js/styles/base16/dracula.css';
+@use "variables" as *;
 
 body{
   font-family:$fontFamilyPrimary;

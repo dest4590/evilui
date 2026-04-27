@@ -8,6 +8,7 @@ import * as urlParse from 'url-parse';
 
 @Component({
     selector: 'ui-login',
+    standalone: false,
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })

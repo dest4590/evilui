@@ -20,6 +20,7 @@ interface DnsEventRow {
 
 @Component({
     selector: 'ui-dns-table',
+    standalone: false,
     templateUrl: './dns-table.component.html',
     styleUrls: ['./dns-table.component.scss']
 })

@@ -1,4 +1,4 @@
-@import "tables";
+@use "tables" as *;
 
 td.metas {
     .badge {

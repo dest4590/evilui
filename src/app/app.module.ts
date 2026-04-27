@@ -1,5 +1,4 @@
-import { HighlightModule } from 'ngx-highlightjs';
-import json from 'highlight.js/lib/languages/json';
+import { HIGHLIGHT_OPTIONS, HighlightModule } from 'ngx-highlightjs';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -25,23 +24,11 @@ import { CanTableComponent } from './components/can-table/can-table.component';
 import { PositionComponent } from './components/position/position.component';
 import { CapletsComponent } from './components/caplets/caplets.component';
 import { AdvancedComponent } from './components/advanced/advanced.component';
-
 import { SignalIndicatorComponent } from './components/signal-indicator/signal-indicator.component';
 import { SortableColumnComponent } from './components/sortable-column/sortable-column.component';
 import { OmnibarComponent } from './components/omnibar/omnibar.component';
 
-import { SearchPipe } from './components/search.pipe';
-import { AlivePipe } from './components/alive.pipe';
-import { UnbashPipe } from './components/unbash.pipe';
-import { SizePipe } from './components/size.pipe';
-import { ModIconPipe } from './components/modicon.pipe';
-import { RecTimePipe } from './components/rectime.pipe';
-
-export function hljsLanguages() {
-    return [
-        { name: 'json', func: json }
-    ];
-}
+import { PipesModule } from './pipes';
 
 @NgModule({
     declarations: [
@@ -64,12 +51,6 @@ export function hljsLanguages() {
         OmnibarComponent,
         SignalIndicatorComponent,
         SortableColumnComponent,
-        SearchPipe,
-        AlivePipe,
-        UnbashPipe,
-        SizePipe,
-        ModIconPipe,
-        RecTimePipe
     ],
     imports: [
         BrowserModule,
@@ -84,12 +65,20 @@ export function hljsLanguages() {
             maxOpened: 5,
             countDuplicates: true
         }),
-        HighlightModule.forRoot({
-            languages: hljsLanguages
-        })
+        HighlightModule,
+        PipesModule,
     ],
-    entryComponents: [EventComponent],
-    providers: [],
+    providers: [
+        {
+            provide: HIGHLIGHT_OPTIONS,
+            useValue: {
+                coreLibraryLoader: () => import('highlight.js/lib/core'),
+                languages: {
+                    json: () => import('highlight.js/lib/languages/json')
+                }
+            }
+        }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

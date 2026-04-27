@@ -71,7 +71,7 @@
 
 <div id="eventModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="eventModalTitle" [ngModel]="curEvent" name="fieldName" ngDefaultControl>
   <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
+    <div class="modal-content" *ngIf="curEvent">
 
       <div class="modal-body" style="padding:0">
         &nbsp;
@@ -84,7 +84,7 @@
         </button>
 
 
-        <pre><code [highlight]="curEventData()" class="json"></code></pre>
+    		<pre><code [highlight]="curEventData()" language="json" class="json"></code></pre>
       </div>
     </div>
   </div>

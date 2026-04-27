@@ -14,6 +14,7 @@ declare var $: any;
 
 @Component({
     selector: 'ui-main-header',
+    standalone: false,
     templateUrl: './main-header.component.html',
     styleUrls: ['./main-header.component.scss']
 })

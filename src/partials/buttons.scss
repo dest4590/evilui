@@ -1,4 +1,4 @@
-@import "variables";
+@use "variables" as *;
 
 .mono {
     font-family: 'Roboto Mono', monospace;

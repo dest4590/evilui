@@ -2,6 +2,7 @@ import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 
 @Component({
     selector: 'ui-signal-indicator',
+    standalone: false,
     templateUrl: './signal-indicator.component.html',
     styleUrls: ['./signal-indicator.component.scss']
 })

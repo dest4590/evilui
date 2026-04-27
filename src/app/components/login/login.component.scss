@@ -1,32 +1,51 @@
 .form-signin {
     width: 100%;
-    // max-width: 330px;
-    max-width: 500px;
-    padding: 15px;
+    max-width: 480px;
+    padding: 30px;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: white;
-}
+    background-color: #1a1f26;
+    border: 1px solid #313131;
+    border-radius: 4px;
+    color: #ccc;
 
+    label {
+        color: #aaa;
+        font-size: .8rem;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        margin-bottom: 4px;
+    }
+
+    small {
+        color: #555;
+    }
+
+    hr {
+        border-color: #2a2f38;
+    }
+}
 
 .form-signin .form-control {
+    background-color: #252b34;
+    border: 1px solid #313131;
+    color: #ccc;
+    border-radius: 3px;
 
-}
-
-.form-signin .form-control:focus {
-    z-index: 2;
+    &:focus {
+        background-color: #252b34;
+        border-color: #95D855;
+        color: #fff;
+        box-shadow: 0 0 0 2px rgba(149, 216, 85, 0.15);
+    }
 }
 
 .form-signin input[type="text"] {
-    margin-bottom: -1px;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
+    margin-bottom: 12px;
 }
 
 .form-signin input[type="password"] {
-    margin-bottom: 10px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+    margin-bottom: 12px;
 }

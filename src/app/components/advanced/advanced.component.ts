@@ -11,6 +11,7 @@ declare var $: any;
 
 @Component({
     selector: 'ui-advanced',
+    standalone: false,
     templateUrl: './advanced.component.html',
     styleUrls: ['./advanced.component.scss']
 })

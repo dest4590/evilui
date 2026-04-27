@@ -7,6 +7,7 @@ declare var ol: any;
 
 @Component({
     selector: 'ui-position',
+    standalone: false,
     templateUrl: './position.component.html',
     styleUrls: ['./position.component.scss']
 })

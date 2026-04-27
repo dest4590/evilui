@@ -3,6 +3,7 @@ import {SortService} from '../../services/sort.service';
 
 @Component({
     selector: '[sortable-column]',
+    standalone: false,
     templateUrl: './sortable-column.component.html'
 })
 export class SortableColumnComponent implements OnInit {

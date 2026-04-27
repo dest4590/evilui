@@ -6,6 +6,8 @@
   },
   "exclude": [
     "test.ts",
+    "app/guards/index.ts",
+    "environments/environment.prod.ts",
     "**/*.spec.ts"
   ]
 }

@@ -10,6 +10,7 @@ declare var $: any;
 
 @Component({
     selector: 'ui-can-table',
+    standalone: false,
     templateUrl: './can-table.component.html',
     styleUrls: ['./can-table.component.scss']
 })

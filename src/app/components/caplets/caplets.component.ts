@@ -8,6 +8,7 @@ declare var $: any;
 
 @Component({
     selector: 'ui-caplets',
+    standalone: false,
     templateUrl: './caplets.component.html',
     styleUrls: ['./caplets.component.scss']
 })
