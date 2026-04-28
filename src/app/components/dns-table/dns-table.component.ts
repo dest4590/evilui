@@ -39,6 +39,9 @@ export class DnsTableComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.subscriptions = [
+            this.api.pollEvents().subscribe((events: Event[]) => {
+                this.update(events);
+            }),
             this.api.onNewEvents.subscribe((events: Event[]) => {
                 this.update(events);
             }),
@@ -61,10 +64,13 @@ export class DnsTableComponent implements OnInit, OnDestroy {
         this.modEnabled = mod ? mod.running : false;
 
         const filtered = events.filter(e => e.tag === 'net.sniff.dns' || e.tag === 'net.sniff.https');
-        filtered.forEach(event => this.addOrMergeEvent(event));
+        if (filtered.length > 0) {
+            filtered.forEach(event => this.addOrMergeEvent(event));
 
-        this.dnsEvents = Array.from(this.dnsEventMap.values());
-        this.sortService.sort(this.dnsEvents, this.sort);
+            this.dnsEvents = Array.from(this.dnsEventMap.values());
+            this.sortService.sort(this.dnsEvents, this.sort);
+            this.dnsEvents = [...this.dnsEvents];
+        }
     }
 
     private addOrMergeEvent(event: Event) {

@@ -27,6 +27,7 @@ export class LanTableComponent implements OnInit, OnDestroy {
         internal: false,
         gratuitous: false,
         random: false,
+        verbose: false,
         interval: 1,
         ban: false
     };
@@ -80,6 +81,7 @@ export class LanTableComponent implements OnInit, OnDestroy {
             internal: this.api.session.env.data['arp.spoof.internal'].toLowerCase() == 'true',
             gratuitous: this.api.session.env.data['arp.spoof.gratuitous'].toLowerCase() == 'true',
             random: this.api.session.env.data['arp.spoof.random'].toLowerCase() == 'true',
+            verbose: this.api.session.env.data['arp.spoof.verbose'] ? this.api.session.env.data['arp.spoof.verbose'].toLowerCase() == 'true' : false,
             interval: parseInt(this.api.session.env.data['arp.spoof.interval']),
             ban: false
         };
@@ -168,6 +170,7 @@ export class LanTableComponent implements OnInit, OnDestroy {
         this.api.cmd('set arp.spoof.internal ' + this.spoofOpts.internal);
         this.api.cmd('set arp.spoof.gratuitous ' + this.spoofOpts.gratuitous);
         this.api.cmd('set arp.spoof.random ' + this.spoofOpts.random);
+        this.api.cmd('set arp.spoof.verbose ' + this.spoofOpts.verbose);
         this.api.cmd('set arp.spoof.interval ' + this.spoofOpts.interval);
 
         let onCmd = this.spoofOpts.ban ? 'arp.ban on' : 'arp.spoof on';

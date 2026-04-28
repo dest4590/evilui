@@ -77,6 +77,16 @@
       </label>
     </div>
 
+    <div class="form-group form-check">
+      <input type="checkbox" class="form-check-input" id="verbose" name="verbose" [(ngModel)]="spoofOpts.verbose">
+      <label class="form-check-label" for="verbose">
+        verbose
+        <small class="text-muted">
+          If set, the spoofer will print a message for every packet sent.
+        </small>
+      </label>
+    </div>
+
     <div class="form-group">
       <label for="interval">arp.spoof.interval
         <small class="text-muted">
